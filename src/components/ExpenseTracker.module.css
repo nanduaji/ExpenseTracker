@@ -1,0 +1,26 @@
+.expense-div {
+  text-align: left;
+  padding: 20px;
+}
+
+.description-label {
+  margin-right: 10px;
+  display: inline-block;
+  width: 100px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.amount-label {
+  margin-bottom: 10px;
+  display: block;
+}
+
+.category-label {
+  margin-bottom: 10px;
+  display: block;
+}
+
+.drop-down {
+  width: 100%;
+}
