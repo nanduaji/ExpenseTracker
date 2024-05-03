@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import {
   Button,
   FormControl,
+  MenuItem,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -19,7 +21,7 @@ function ExpenseTracker() {
     amount: "",
   });
   const [tableItems, setTableItems] = useState([]);
-
+  const [totalAmount, setTotalAmount] = useState(0);
   const handleItemChange = (event) => {
     const fieldName = event.target.name;
     const value = event.target.value;
@@ -27,15 +29,27 @@ function ExpenseTracker() {
   };
 
   const handleSubmit = () => {
-    setTableItems([...tableItems, itemDetails]);
-    setItemDetails({
-      item_number: "",
-      item: "",
-      category: "",
-      amount: "",
-    });
+    if (
+      !itemDetails.item ||
+      !itemDetails.item_number ||
+      !itemDetails.category ||
+      !itemDetails.amount
+    ) {
+      alert("Fill all the fields");
+    } else {
+      setTableItems([...tableItems, itemDetails]);
+      setTotalAmount(parseInt(itemDetails.amount) + parseInt(totalAmount));
+    }
   };
-
+  const handleDelete = (index) => {
+    const updatedTableItems = tableItems.filter((_, idx) => idx !== index);
+    setTableItems(updatedTableItems);
+    setTotalAmount(parseInt(totalAmount) - parseInt(itemDetails.amount));
+  };
+  const handleDropDown = (event) => {
+    const dropDownItem = event.target.value;
+    setTableItems(tableItems.filter((item) => item.category == dropDownItem));
+  };
   return (
     <div>
       <h2>Expense Tracker</h2>
@@ -80,7 +94,20 @@ function ExpenseTracker() {
       <Button onClick={handleSubmit}>Submit</Button>
       <br />
       <br />
+      Total Amount : {totalAmount}
       <TableContainer>
+        Sort By:{" "}
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value="Select"
+          label="Category"
+          onChange={(event) => handleDropDown(event)}
+        >
+          <MenuItem value="Select">Select</MenuItem>
+          <MenuItem value="Groceries">Groceries</MenuItem>
+          <MenuItem value="Fruits">Fruits</MenuItem>
+        </Select>
         <Table>
           <TableHead>
             <TableRow>
@@ -88,6 +115,7 @@ function ExpenseTracker() {
               <TableCell>Item</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Amount</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -97,6 +125,14 @@ function ExpenseTracker() {
                 <TableCell>{item.item}</TableCell>
                 <TableCell>{item.category}</TableCell>
                 <TableCell>{item.amount}</TableCell>
+                <TableCell>
+                  <Button
+                    style={{ color: "red" }}
+                    onClick={() => handleDelete(index)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
