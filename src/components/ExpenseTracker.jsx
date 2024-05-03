@@ -1,172 +1,109 @@
+import React, { useState } from "react";
 import {
   Button,
   FormControl,
-  FormHelperText,
-  Input,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import styles from "./ExpenseTracker.module.css";
 
-const ExpenseTracker = () => {
-  const [categories, setOptions] = useState([
-    {
-      item: 1,
-      description: "aaa",
-      amount: 10,
-      category: "None",
-    },
-    {
-      item: 2,
-      description: "bbb",
-      amount: 10,
-      category: "Groceries",
-    },
-    {
-      item: 3,
-      description: "ccc",
-      amount: 10,
-      category: "Fruits",
-    },
-    {
-      item: 4,
-      description: "ddd",
-      amount: 10,
-      category: "Utilities",
-    },
-  ]);
-  const [newCategory, setNewCategory] = useState({
+function ExpenseTracker() {
+  const [itemDetails, setItemDetails] = useState({
+    item_number: "",
     item: "",
-    description: "",
-    amount: "",
     category: "",
+    amount: "",
   });
-  const selectCategory = (event) => {
-    const newCategories = [...categories];
-    console.log(
-      newCategories.filter((item) => item.category == event.target.value)
-    );
-    setOptions(
-      newCategories.filter((item) => item.category == event.target.value)
-    );
-  };
-  const handleIdChange = (e) => {
-    setNewCategory({ ...newCategory, item: e.target.value });
-  };
-  const handleDescriptionChange = (e) => {
-    setNewCategory({ ...newCategory, description: e.target.value });
-  };
-  const handleAmountChange = (e) => {
-    setNewCategory({ ...newCategory, amount: e.target.value });
-  };
-  const handleCategoryChange = (e) => {
-    setNewCategory({ ...newCategory, category: e.target.value });
+  const [tableItems, setTableItems] = useState([]);
+
+  const handleItemChange = (event) => {
+    const fieldName = event.target.name;
+    const value = event.target.value;
+    setItemDetails({ ...itemDetails, [fieldName]: value });
   };
 
   const handleSubmit = () => {
-    setOptions([...categories, newCategory]);
+    setTableItems([...tableItems, itemDetails]);
+    setItemDetails({
+      item_number: "",
+      item: "",
+      category: "",
+      amount: "",
+    });
   };
 
   return (
-    <>
+    <div>
+      <h2>Expense Tracker</h2>
       <FormControl>
-        <InputLabel htmlFor="id-input">Id</InputLabel>
-        <Input
-          onChange={(e) => handleIdChange(e)}
-          id="id-input"
-          aria-describedby="id-helper-text"
+        <TextField
+          value={itemDetails.item_number}
+          name="item_number"
+          required
+          id="outlined-required-item_number"
+          label="Item Number"
+          onChange={(event) => handleItemChange(event)}
         />
-        <FormHelperText id="id-helper-text">Enter the Id</FormHelperText>
-      </FormControl>
-
-      <FormControl>
-        <InputLabel htmlFor="description-input">Description</InputLabel>
-        <Input
-          onChange={(e) => handleDescriptionChange(e)}
-          id="description-input"
-          aria-describedby="description-helper-text"
+        <br />
+        <TextField
+          value={itemDetails.item}
+          name="item"
+          required
+          id="outlined-required-item"
+          label="Item"
+          onChange={(event) => handleItemChange(event)}
         />
-        <FormHelperText id="description-helper-text">
-          Enter the Description
-        </FormHelperText>
-      </FormControl>
-
-      <FormControl>
-        <InputLabel htmlFor="amount-input">Amount</InputLabel>
-        <Input
-          onChange={(e) => handleAmountChange(e)}
-          id="amount-input"
-          aria-describedby="amount-helper-text"
+        <br />
+        <TextField
+          value={itemDetails.category}
+          name="category"
+          required
+          id="outlined-required-category"
+          label="Category"
+          onChange={(event) => handleItemChange(event)}
         />
-        <FormHelperText id="amount-helper-text">
-          Enter the Amount
-        </FormHelperText>
-      </FormControl>
-
-      <FormControl>
-        <InputLabel htmlFor="category-input">Category</InputLabel>
-        <Input
-          onChange={(e) => handleCategoryChange(e)}
-          id="category-input"
-          aria-describedby="category-helper-text"
+        <br />
+        <TextField
+          value={itemDetails.amount}
+          name="amount"
+          required
+          id="outlined-required-amount"
+          label="Amount"
+          onChange={(event) => handleItemChange(event)}
         />
-        <FormHelperText id="category-helper-text">
-          Enter the Category
-        </FormHelperText>
       </FormControl>
-      <Button onClick={handleSubmit}>Submit</Button>
-      <label htmlFor="category" className={styles["category-label"]}>
-        Category
-      </label>
       <br />
-      <Select
-        className={styles["drop-down"]}
-        onChange={(event) => selectCategory(event)}
-      >
-        <MenuItem value="">Select Category</MenuItem>
-        {categories.map((category) => (
-          <MenuItem key={category.item} value={category.category}>
-            {category.category}
-          </MenuItem>
-        ))}
-      </Select>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Button onClick={handleSubmit}>Submit</Button>
+      <br />
+      <br />
+      <TableContainer>
+        <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Item Number</TableCell>
               <TableCell>Item</TableCell>
-              <TableCell align="right">Description</TableCell>
-              <TableCell align="right">Amount</TableCell>
-              <TableCell align="right">Category</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>Amount</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {categories.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell align="right">{row.item}</TableCell>
-                <TableCell align="right">{row.description}</TableCell>
-                <TableCell align="right">{row.amount}</TableCell>
-                <TableCell align="right">{row.category}</TableCell>
+            {tableItems.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell>{item.item_number}</TableCell>
+                <TableCell>{item.item}</TableCell>
+                <TableCell>{item.category}</TableCell>
+                <TableCell>{item.amount}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </div>
   );
-};
+}
 
 export default ExpenseTracker;
