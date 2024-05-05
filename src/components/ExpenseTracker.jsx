@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   FormControl,
@@ -14,6 +14,10 @@ import {
 } from "@mui/material";
 
 function ExpenseTracker() {
+  useEffect(() => {
+    document.title = "Expense Tracker";
+  });
+
   const [itemDetails, setItemDetails] = useState({
     item_number: "",
     item: "",
